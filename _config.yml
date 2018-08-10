@@ -1,4 +1,4 @@
-theme: jekyll-theme-plain
+theme: jekyll-theme-minimal
 plugins:
   - jekyll-redirect-from
 title: LendingClub Project
