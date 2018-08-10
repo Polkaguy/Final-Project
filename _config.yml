@@ -1,3 +1,11 @@
 theme: jekyll-theme-modernist
 plugins:
   - jekyll-redirect-from
+title: LendingClub Project
+description: Predicting Lending Club Loan ROI
+baseurl:
+markdown: kramdown
+kramdown:
+    math_engine: mathjax
+    input: GFM
+    syntax_highlighter: rouge
