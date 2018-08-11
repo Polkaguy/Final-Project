@@ -4,9 +4,9 @@ notebook: Final_Project_8_10.ipynb
 nav_include: 1
 ---
 
-## CS109A Data Science Final Project
-Jinwon Chung and Kate Zhou
-Group #XX
+## CS109A Data Science Final Project - Lending Club
+Catherine Williams, Robert Persichitte, Vikram Maduskar, Rajidi Reddy
+Group #4
 
 ### 1. Motivation
 
