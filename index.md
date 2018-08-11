@@ -16,12 +16,12 @@ Group Members include Vikram Maduskar, Robert Persichitte, Pavan Reddy, and Cath
 
 # Introduction  
 Table of Contents: 
-1.	Motivation: 
-2.	Problem Statement: 
-3.	Introduction and Description of Data: 
-4.	EDA: 
-5.	Models: 
-6.	Results and Conclusion: 
+1.	Motivation
+2.	Problem Statement
+3.	Introduction and Description of Data
+4.	EDA
+5.	Results and Conclusion
+6.  Appendix - Models
 
 
 # <img style="float: left; padding-right: 300px; width: 800px" src="AI.png">
@@ -94,16 +94,21 @@ This variable still has limitations. First, we must limit our analysis to loans 
 
 Based on the data, it appears that joint applications are a fairly new development in these data. We see only about 50,000 instances where the data are included for joint applications. The following visualization shows the relationship for income in joint applicants.
 
-# 6. Results and Conclusion
+# 4. Exploratory Data Analysis
 
-After testing different classification options, our final model shows an accuracy of 0.80. 
+As part of the EDA, we need to know which values are categorical. Initially we created a scatter plot to initially explore the data. Here income and joint income are the two variables in our scatter plot. In this plot we were able to see that the majority of the income was grouped below \\$500,000 jointly and \\$300,000 individually. 
+ 
+Beyond this, we then started to visualize the application type of the loan. We did this both by the loan amount individually and jointly as a bar chart and a violin plot. 
+ 
 
-**Limitations**  
-Any quality research must include information about limitiatons. Our initial concern is that the data set that is available from Lending Club includes loans as early as 2010. Given that the economic trends of our country have not stayed consistent since that time, it is hard to guarantee that predictions made from this data would hold true to today’s economic situations. While we would ideally want to solve for this, our model includes no economic trend data. While we could possibly control for economic trends and time periods of growth and recession in our models, that is beyond the scope of this analysis.
+In the below heat map,  we ran correlations with all available variables.
+ 
+Then we regularized the data and looked for the regressor that, when considered independently had the highest impact on the model. 
+ 
+By far, total Revolving Debt limit has the biggest impact in terms of magnitude. We should keep this as the one regressor to represent revolving debt. This will help us to eliminate multicollinearity. This led us to next explore the impact this would have on our correlation matrix:
+ 
+We still see some multicollinearity with the loan payment section. Total payments is one of the planned Y variables. For instances where it has high correlation, we expect to see strong relationships.
 
-As a potential next step for our analysis we would incorporate broader economic indicators to understand their impact on the expected rate of return on the loans. This would be especially difficult given the complexity of predicting economic trends. While we have retrospective data on borrowers and lenders, there is an advantage to knowing what happened to economic markets while the loan was in repayment. We would not have that information when deciding which loans are suitable for investment. This is a common problem across the entire financial sector. So, while this is not unique to us, it is important to always caution a model’s interpretation with knowledge that because financial data is yet to be perfectly predicted.
-
-Because of this limitation, the actual return of the loans our model chooses may differ from the expected return we calculate. They may differ if the broader economic situation is not as stable as it has been during the period we selected our training data from.
 
 
 ```python
@@ -160,15 +165,6 @@ from pandas.core import datetools
 
 ```
 
-    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
-      return f(*args, **kwds)
-    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
-      return f(*args, **kwds)
-    /usr/local/lib/python3.6/site-packages/sklearn/ensemble/weight_boosting.py:29: DeprecationWarning: numpy.core.umath_tests is an internal NumPy module and should not be imported. It will be removed in a future NumPy release.
-      from numpy.core.umath_tests import inner1d
-    Using TensorFlow backend.
-
-
 
 ```python
 converters = dict(
@@ -212,7 +208,7 @@ else:
     cols = df.dtypes
     for csv in csvs:
         path = basepath + csv
-        print("Reading",path)
+        #print("Reading",path)
         tdf = pd.read_csv(path,header=1,low_memory=False)
         df=df.append(tdf)
     
@@ -221,183 +217,15 @@ df.reset_index(inplace=True) # This will help with joining back data if necessar
 print(df.shape)
 ```
 
-    Reading ./Source Data/Loan Data/LoanStats3a_securev1.csv
-    Reading ./Source Data/Loan Data/LoanStats3b_securev1.csv
-    Reading ./Source Data/Loan Data/LoanStats3c_securev1.csv
-    Reading ./Source Data/Loan Data/LoanStats3d_securev1.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2016Q1.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2016Q2.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2016Q3.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2016Q4.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2017Q1.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2017Q2.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2017Q3.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2017Q4.csv
-    Reading ./Source Data/Loan Data/LoanStats_securev1_2018Q1.csv
     (1873317, 152)
 
 
 
 ```python
 pd.set_option('display.max_rows', 200)
-print(df.dtypes)
+#print(df.dtypes)
 pd.set_option('display.max_rows', 200)
 ```
-
-    index                                           int64
-    id                                             object
-    member_id                                     float64
-    loan_amnt                                     float64
-    funded_amnt                                   float64
-    funded_amnt_inv                               float64
-    term                                           object
-    int_rate                                       object
-    installment                                   float64
-    grade                                          object
-    sub_grade                                      object
-    emp_title                                      object
-    emp_length                                     object
-    home_ownership                                 object
-    annual_inc                                    float64
-    verification_status                            object
-    issue_d                                        object
-    loan_status                                    object
-    pymnt_plan                                     object
-    url                                            object
-    desc                                           object
-    purpose                                        object
-    title                                          object
-    zip_code                                       object
-    addr_state                                     object
-    dti                                           float64
-    delinq_2yrs                                   float64
-    earliest_cr_line                               object
-    fico_range_low                                float64
-    fico_range_high                               float64
-    inq_last_6mths                                float64
-    mths_since_last_delinq                        float64
-    mths_since_last_record                        float64
-    open_acc                                      float64
-    pub_rec                                       float64
-    revol_bal                                     float64
-    revol_util                                     object
-    total_acc                                     float64
-    initial_list_status                            object
-    out_prncp                                     float64
-    out_prncp_inv                                 float64
-    total_pymnt                                   float64
-    total_pymnt_inv                               float64
-    total_rec_prncp                               float64
-    total_rec_int                                 float64
-    total_rec_late_fee                            float64
-    recoveries                                    float64
-    collection_recovery_fee                       float64
-    last_pymnt_d                                   object
-    last_pymnt_amnt                               float64
-    next_pymnt_d                                   object
-    last_credit_pull_d                             object
-    last_fico_range_high                          float64
-    last_fico_range_low                           float64
-    collections_12_mths_ex_med                    float64
-    mths_since_last_major_derog                   float64
-    policy_code                                   float64
-    application_type                               object
-    annual_inc_joint                              float64
-    dti_joint                                     float64
-    verification_status_joint                      object
-    acc_now_delinq                                float64
-    tot_coll_amt                                  float64
-    tot_cur_bal                                   float64
-    open_acc_6m                                   float64
-    open_act_il                                   float64
-    open_il_12m                                   float64
-    open_il_24m                                   float64
-    mths_since_rcnt_il                            float64
-    total_bal_il                                  float64
-    il_util                                       float64
-    open_rv_12m                                   float64
-    open_rv_24m                                   float64
-    max_bal_bc                                    float64
-    all_util                                      float64
-    total_rev_hi_lim                              float64
-    inq_fi                                        float64
-    total_cu_tl                                   float64
-    inq_last_12m                                  float64
-    acc_open_past_24mths                          float64
-    avg_cur_bal                                   float64
-    bc_open_to_buy                                float64
-    bc_util                                       float64
-    chargeoff_within_12_mths                      float64
-    delinq_amnt                                   float64
-    mo_sin_old_il_acct                            float64
-    mo_sin_old_rev_tl_op                          float64
-    mo_sin_rcnt_rev_tl_op                         float64
-    mo_sin_rcnt_tl                                float64
-    mort_acc                                      float64
-    mths_since_recent_bc                          float64
-    mths_since_recent_bc_dlq                      float64
-    mths_since_recent_inq                         float64
-    mths_since_recent_revol_delinq                float64
-    num_accts_ever_120_pd                         float64
-    num_actv_bc_tl                                float64
-    num_actv_rev_tl                               float64
-    num_bc_sats                                   float64
-    num_bc_tl                                     float64
-    num_il_tl                                     float64
-    num_op_rev_tl                                 float64
-    num_rev_accts                                 float64
-    num_rev_tl_bal_gt_0                           float64
-    num_sats                                      float64
-    num_tl_120dpd_2m                              float64
-    num_tl_30dpd                                  float64
-    num_tl_90g_dpd_24m                            float64
-    num_tl_op_past_12m                            float64
-    pct_tl_nvr_dlq                                float64
-    percent_bc_gt_75                              float64
-    pub_rec_bankruptcies                          float64
-    tax_liens                                     float64
-    tot_hi_cred_lim                               float64
-    total_bal_ex_mort                             float64
-    total_bc_limit                                float64
-    total_il_high_credit_limit                    float64
-    revol_bal_joint                               float64
-    sec_app_fico_range_low                        float64
-    sec_app_fico_range_high                       float64
-    sec_app_earliest_cr_line                       object
-    sec_app_inq_last_6mths                        float64
-    sec_app_mort_acc                              float64
-    sec_app_open_acc                              float64
-    sec_app_revol_util                            float64
-    sec_app_open_act_il                           float64
-    sec_app_num_rev_accts                         float64
-    sec_app_chargeoff_within_12_mths              float64
-    sec_app_collections_12_mths_ex_med            float64
-    sec_app_mths_since_last_major_derog           float64
-    hardship_flag                                  object
-    hardship_type                                  object
-    hardship_reason                                object
-    hardship_status                                object
-    deferral_term                                 float64
-    hardship_amount                               float64
-    hardship_start_date                            object
-    hardship_end_date                              object
-    payment_plan_start_date                        object
-    hardship_length                               float64
-    hardship_dpd                                  float64
-    hardship_loan_status                           object
-    orig_projected_additional_accrued_interest    float64
-    hardship_payoff_balance_amount                float64
-    hardship_last_payment_amount                  float64
-    disbursement_method                            object
-    debt_settlement_flag                           object
-    debt_settlement_flag_date                      object
-    settlement_status                              object
-    settlement_date                                object
-    settlement_amount                             float64
-    settlement_percentage                         float64
-    settlement_term                               float64
-    dtype: object
-
 
 
 ```python
@@ -491,7 +319,7 @@ plt.show;
 ```
 
 
-![png](output_14_0.png)
+![png](output_15_0.png)
 
 
 Because of the high risk of multicolinearity, and the small number of observations, we are dropping this from the dataset. We will still keep a dummy variable that treats joint applications differently, but we will not consider the joint income of applicants.
@@ -553,18 +381,6 @@ print(reduced_df.shape)
 
 
 ```python
-# backup our df
-backup_df = reduced_df.copy()
-```
-
-
-```python
-#restore our df
-reduced_df = backup_df.copy()
-```
-
-
-```python
 # Convert strings to numbers emp_length, int_rate, revol_util
 emp_length_map={'10+ years':10, '< 1 year':0, '1 year':1, '3 years':3, '8 years':8, '9 years':9,
                 '4 years':4, '5 years':5, '6 years':6, '2 years':2, '7 years':7}
@@ -587,23 +403,6 @@ print(reduced_df.shape)
 ```
 
     (1020552, 28)
-
-
-## 4.	EDA
-
-As part of the EDA, we need to know which values are categorical. Initially we created a scatter plot to initially explore the data. Here income and joint income are the two variables in our scatter plot. In this plot we were able to see that the majority of the income was grouped below \\$500,000 jointly and \\$300,000 individually. 
- 
-Beyond this, we then started to visualize the application type of the loan. We did this both by the loan amount individually and jointly as a bar chart and a violin plot. 
- 
-
-In the below heat map,  we ran correlations with all available variables.
- 
-Then we regularized the data and looked for the regressor that, when considered independently had the highest impact on the model. 
- 
-By far, total Revolving Debt limit has the biggest impact in terms of magnitude. We should keep this as the one regressor to represent revolving debt. This will help us to eliminate multicollinearity. This led us to next explore the impact this would have on our correlation matrix:
- 
-We still see some multicollinearity with the loan payment section. Total payments is one of the planned Y variables. For instances where it has high correlation, we expect to see strong relationships.
- 
 
 
 
@@ -775,7 +574,7 @@ print(setb-seta)
 print(reduced_df.shape)
 ```
 
-    {'purpose_credit_card', 'purpose_major_purchase', 'term_ 60 months', 'purpose_home_improvement', 'home_ownership_MORTGAGE', 'application_type_Joint App', 'purpose_medical', 'purpose_moving', 'verification_status_Verified', 'purpose_educational', 'purpose_other', 'home_ownership_NONE', 'purpose_house', 'loan_status_Fully Paid', 'home_ownership_RENT', 'verification_status_Source Verified', 'purpose_debt_consolidation', 'purpose_vacation', 'home_ownership_OWN', 'purpose_wedding', 'home_ownership_OTHER', 'purpose_small_business', 'purpose_renewable_energy'}
+    {'purpose_moving', 'verification_status_Verified', 'home_ownership_OTHER', 'home_ownership_OWN', 'loan_status_Fully Paid', 'purpose_home_improvement', 'term_ 60 months', 'purpose_debt_consolidation', 'purpose_wedding', 'verification_status_Source Verified', 'home_ownership_RENT', 'application_type_Joint App', 'purpose_credit_card', 'purpose_major_purchase', 'purpose_educational', 'home_ownership_NONE', 'purpose_house', 'purpose_vacation', 'purpose_other', 'purpose_medical', 'purpose_renewable_energy', 'home_ownership_MORTGAGE', 'purpose_small_business'}
     (1020552, 44)
 
 
@@ -1068,7 +867,7 @@ plt.show()
 
 
 
-![png](output_32_1.png)
+![png](output_30_1.png)
 
 
 ## Removing redundancy
@@ -1079,46 +878,7 @@ As another example, we can see the percentage of bankcard accounts > 75% of the 
 For this reason we need to select variables with high correlation and choose the variables that will have the biggest impact on our model. I have created the following groups that will need to be consolidated.
 
 ## High-Magnitude Factors
-The following code regularizes the data and then looks for the regressor that, when considered independently has the higest impact on the model.
-
-
-```python
-# Create standardized dataframe
-std_df = nonnan_df.copy()
-std_df.drop(columns=['out_prncp', 'out_prncp_inv'],inplace=True) # Drop because there is no variation in these columns
-y=nonnan_df['total_pymnt']/nonnan_df['loan_amnt']
-for col in std_df.columns:
-    std_df[col] = (std_df[col] - std_df[col].min()) / (std_df[col].max() - std_df[col].min())
-x_full=std_df.drop(columns=['loan_amnt','loan_amnt'])
-# Revolving debt maximum related variables
-revolving = [
-    'bc_open_to_buy',
-    'num_rev_accts',
-    'num_rev_tl_bal_gt_0',
-    'revol_bal',
-    'revol_util',
-    'total_rev_hi_lim',
-    'tot_hi_cred_lim',
-    'num_il_tl',
-    'open_acc',
-    'num_bc_tl'
-]
-
-test_df = pd.DataFrame(columns=['Predictor','ABS Coef','R2'])
-for col in revolving:
-    cols_to_drop = revolving.copy()
-    cols_to_drop.remove(col)
-    x=x_full.drop(columns=cols_to_drop)
-    test_reg = LinearRegression().fit(x,y)
-    test_coef = test_reg.coef_[list(x.columns).index(col)]
-    test_score = test_reg.score(x,y)
-    test_df = test_df.append({
-        'Predictor':col,
-        'ABS Coef':abs(test_coef),
-        'R2':test_score
-    },ignore_index=True)
-test_df
-```
+We ran code that regularizes the data and then looks for the regressor that, when considered independently has the higest impact on the model.
 
 By far, total Revolving Debt limit has the biggest impact in terms of magnitude. We should keep this as the one regressor to represent revolving debt. This will help us to eliminate multicolinearity. Let's explore the impact this has on our correlation matrix
 
@@ -1126,40 +886,6 @@ Note:
 I did not perform the same analysis for the grade and interest rate. The loans are structured so that the grade determines the range of interest rates. The steps within the grade specifically determine the interest rate. Therefore, the grade the step and the rate all give the same information, but the rate gives the specific detail.
 
 Note: In the new dataset, I replace the payment amount with the percentage of income that is dedicated to the payment. We can have all the factors to calculate loan amount (term, rate, and original balance) as individual regressors. Replacing it will still capture a critical element of the loan amount while removing multicolinearity.
-
-
-```python
-reduc_corr_columns = corr_columns.copy()
-
-#reduc_corr_columns[]
-to_remove = revolving.copy()
-to_remove += ['grade'] # Extra code to drop grade
-
-to_remove.remove('total_rev_hi_lim')
-for x in to_remove:
-    reduc_corr_columns.remove(x)
-
-corr_df=nonnan_df[reduc_corr_columns]
-
-matrix=np.corrcoef(corr_df,rowvar=False)-np.eye(len(corr_df.columns))
-
-
-i,j=np.nonzero(abs(matrix) > 0.7)
-print("Factors with high correlation (> +/-0.7) are:")
-for k in range(len(i)):
-    print("\t",k,corr_df.columns[i[k]],"vs",corr_df.columns[j[k]],"=",matrix[i[k]][j[k]])
-    
-
-# cube each value to highlight higher correlation elements
-matrix=abs(matrix**3)
-plt.figure(figsize=(13,10))
-plt.pcolor(matrix,cmap='brg')
-
-plt.xticks(range(len(corr_df.columns)), corr_df.columns,rotation='vertical')
-plt.yticks(range(len(corr_df.columns)), corr_df.columns)
-plt.colorbar(cmap='brg')
-plt.show()
-```
 
 Notes:
 - We still see some multicolinearity with the loan payment section. I plan to address additional factors in the factoring for income section.
@@ -1189,6 +915,10 @@ plt.title('Income vs. Payment')
 plt.show()
 ```
 
+
+![png](output_36_0.png)
+
+
 While it looks like income and loan amount are both approximately normally distributed, we see that there is a clear fan pattern here. No monthly loan payment is larger than approximately 1% of annual income. We may be able to keep valuable information from both datasets and reduce multicolinearity by considering not the individuals variables, but the relationships between them.
 
 
@@ -1197,6 +927,21 @@ nonnan_df['percent_of_income'] = nonnan_df['installment']*12/nonnan_df['annual_i
 nonnan_df['percent_of_income'].describe()
 ```
 
+
+
+
+    count    1.020552e+06
+    mean              inf
+    std               NaN
+    min      1.231699e-04
+    25%      4.688933e-02
+    50%      7.284552e-02
+    75%      1.057535e-01
+    max               inf
+    Name: percent_of_income, dtype: float64
+
+
+
 Because we see some odd cases, I looked up an extreme and found that we see odd values when considering joint incomes. These instances are rare (fewer than 40 cases where total payments are greater than total income). This loan was funded as a joint application. As a result we are going to have to throw out any data about joint applications as it only represents 8000 cases, but creates significant leverage points.
 
 
@@ -1204,6 +949,165 @@ Because we see some odd cases, I looked up an extreme and found that we see odd 
 # Testing an extreme example from the
 df.iloc[1542746]
 ```
+
+
+
+
+    index                                                                                     18648
+    id                                                                                    115381037
+    member_id                                                                                   NaN
+    loan_amnt                                                                                 10000
+    funded_amnt                                                                               10000
+    funded_amnt_inv                                                                           10000
+    term                                                                                  60 months
+    int_rate                                                                                 20.00%
+    installment                                                                              264.94
+    grade                                                                                         D
+    sub_grade                                                                                    D4
+    emp_title                                                                                Owner 
+    emp_length                                                                             < 1 year
+    home_ownership                                                                         MORTGAGE
+    annual_inc                                                                                  100
+    verification_status                                                                Not Verified
+    issue_d                                                                                    2017
+    loan_status                                                                          Fully Paid
+    pymnt_plan                                                                                    n
+    url                                           https://lendingclub.com/browse/loanDetail.acti...
+    desc                                                                                        NaN
+    purpose                                                                      debt_consolidation
+    title                                                                        Debt consolidation
+    zip_code                                                                                  968xx
+    addr_state                                                                                   HI
+    dti                                                                                         999
+    delinq_2yrs                                                                                   0
+    earliest_cr_line                                                                           3988
+    fico_range_low                                                                              720
+    fico_range_high                                                                             724
+    inq_last_6mths                                                                                0
+    mths_since_last_delinq                                                                      NaN
+    mths_since_last_record                                                                      NaN
+    open_acc                                                                                      3
+    pub_rec                                                                                       0
+    revol_bal                                                                                 24737
+    revol_util                                                                                95.9%
+    total_acc                                                                                     5
+    initial_list_status                                                                           w
+    out_prncp                                                                                     0
+    out_prncp_inv                                                                                 0
+    total_pymnt                                                                             10007.2
+    total_pymnt_inv                                                                         10007.2
+    total_rec_prncp                                                                           10000
+    total_rec_int                                                                              7.22
+    total_rec_late_fee                                                                            0
+    recoveries                                                                                    0
+    collection_recovery_fee                                                                       0
+    last_pymnt_d                                                                           Sep-2017
+    last_pymnt_amnt                                                                         10018.3
+    next_pymnt_d                                                                                NaN
+    last_credit_pull_d                                                                     Oct-2017
+    last_fico_range_high                                                                        699
+    last_fico_range_low                                                                         695
+    collections_12_mths_ex_med                                                                    0
+    mths_since_last_major_derog                                                                 NaN
+    policy_code                                                                                   1
+    application_type                                                                      Joint App
+    annual_inc_joint                                                                         138100
+    dti_joint                                                                                 18.72
+    verification_status_joint                                                          Not Verified
+    acc_now_delinq                                                                                0
+    tot_coll_amt                                                                                  0
+    tot_cur_bal                                                                               41900
+    open_acc_6m                                                                                   0
+    open_act_il                                                                                   1
+    open_il_12m                                                                                   0
+    open_il_24m                                                                                   0
+    mths_since_rcnt_il                                                                           39
+    total_bal_il                                                                              17163
+    il_util                                                                                      60
+    open_rv_12m                                                                                   0
+    open_rv_24m                                                                                   1
+    max_bal_bc                                                                                  720
+    all_util                                                                                     77
+    total_rev_hi_lim                                                                          25800
+    inq_fi                                                                                        0
+    total_cu_tl                                                                                   4
+    inq_last_12m                                                                                  0
+    acc_open_past_24mths                                                                          1
+    avg_cur_bal                                                                               13967
+    bc_open_to_buy                                                                               80
+    bc_util                                                                                      90
+    chargeoff_within_12_mths                                                                      0
+    delinq_amnt                                                                                   0
+    mo_sin_old_il_acct                                                                           39
+    mo_sin_old_rev_tl_op                                                                        131
+    mo_sin_rcnt_rev_tl_op                                                                        13
+    mo_sin_rcnt_tl                                                                               13
+    mort_acc                                                                                      0
+    mths_since_recent_bc                                                                         62
+    mths_since_recent_bc_dlq                                                                    NaN
+    mths_since_recent_inq                                                                       NaN
+    mths_since_recent_revol_delinq                                                              NaN
+    num_accts_ever_120_pd                                                                         0
+    num_actv_bc_tl                                                                                1
+    num_actv_rev_tl                                                                               2
+    num_bc_sats                                                                                   1
+    num_bc_tl                                                                                     1
+    num_il_tl                                                                                     1
+    num_op_rev_tl                                                                                 2
+    num_rev_accts                                                                                 4
+    num_rev_tl_bal_gt_0                                                                           2
+    num_sats                                                                                      3
+    num_tl_120dpd_2m                                                                              0
+    num_tl_30dpd                                                                                  0
+    num_tl_90g_dpd_24m                                                                            0
+    num_tl_op_past_12m                                                                            0
+    pct_tl_nvr_dlq                                                                              100
+    percent_bc_gt_75                                                                            100
+    pub_rec_bankruptcies                                                                          0
+    tax_liens                                                                                     0
+    tot_hi_cred_lim                                                                           54566
+    total_bal_ex_mort                                                                         41900
+    total_bc_limit                                                                              800
+    total_il_high_credit_limit                                                                28766
+    revol_bal_joint                                                                           74027
+    sec_app_fico_range_low                                                                      665
+    sec_app_fico_range_high                                                                     669
+    sec_app_earliest_cr_line                                                               Jul-2003
+    sec_app_inq_last_6mths                                                                        0
+    sec_app_mort_acc                                                                              1
+    sec_app_open_acc                                                                              6
+    sec_app_revol_util                                                                         98.5
+    sec_app_open_act_il                                                                           2
+    sec_app_num_rev_accts                                                                        10
+    sec_app_chargeoff_within_12_mths                                                              0
+    sec_app_collections_12_mths_ex_med                                                            0
+    sec_app_mths_since_last_major_derog                                                          54
+    hardship_flag                                                                                 N
+    hardship_type                                                                               NaN
+    hardship_reason                                                                             NaN
+    hardship_status                                                                             NaN
+    deferral_term                                                                               NaN
+    hardship_amount                                                                             NaN
+    hardship_start_date                                                                         NaN
+    hardship_end_date                                                                           NaN
+    payment_plan_start_date                                                                     NaN
+    hardship_length                                                                             NaN
+    hardship_dpd                                                                                NaN
+    hardship_loan_status                                                                        NaN
+    orig_projected_additional_accrued_interest                                                  NaN
+    hardship_payoff_balance_amount                                                              NaN
+    hardship_last_payment_amount                                                                NaN
+    disbursement_method                                                                        Cash
+    debt_settlement_flag                                                                          N
+    debt_settlement_flag_date                                                                   NaN
+    settlement_status                                                                           NaN
+    settlement_date                                                                             NaN
+    settlement_amount                                                                           NaN
+    settlement_percentage                                                                       NaN
+    settlement_term                                                                             NaN
+    Name: 1542746, dtype: object
+
+
 
 
 ```python
@@ -1248,49 +1152,28 @@ X_train, X_tune, y_train, y_tune = train_test_split(
 print(X_train.shape,X_tune.shape,X_test.shape)
 ```
 
-    (1873317, 152) (1020552, 44)
-    ['purpose_credit_card', 'purpose_major_purchase', 'int_rate', 'inq_last_6mths', 'installment', 'term_ 60 months', 'purpose_home_improvement', 'total_acc', 'annual_inc', 'application_type_Joint App', 'home_ownership_MORTGAGE', 'purpose_medical', 'verification_status_Verified', 'purpose_moving', 'revol_util', 'revol_bal', 'purpose_educational', 'purpose_small_business', 'dti', 'inq_fi', 'delinq_2yrs', 'emp_length', 'purpose_other', 'mths_since_last_major_derog', 'open_acc', 'mths_since_last_record', 'home_ownership_NONE', 'purpose_house', 'home_ownership_RENT', 'verification_status_Source Verified', 'purpose_debt_consolidation', 'purpose_vacation', 'fico_est', 'mths_since_last_delinq', 'home_ownership_OWN', 'purpose_wedding', 'pub_rec', 'home_ownership_OTHER', 'earliest_cr_line', 'purpose_renewable_energy']
-    Index(['purpose_credit_card', 'purpose_major_purchase', 'int_rate',
-           'inq_last_6mths', 'installment', 'term_ 60 months',
-           'purpose_home_improvement', 'total_acc', 'annual_inc',
-           'application_type_Joint App', 'home_ownership_MORTGAGE',
-           'purpose_medical', 'verification_status_Verified', 'purpose_moving',
-           'revol_util', 'revol_bal', 'purpose_educational',
-           'purpose_small_business', 'dti', 'inq_fi', 'delinq_2yrs', 'emp_length',
-           'purpose_other', 'mths_since_last_major_derog', 'open_acc',
-           'mths_since_last_record', 'home_ownership_NONE', 'purpose_house',
-           'home_ownership_RENT', 'verification_status_Source Verified',
-           'purpose_debt_consolidation', 'purpose_vacation', 'fico_est',
-           'mths_since_last_delinq', 'home_ownership_OWN', 'purpose_wedding',
-           'pub_rec', 'home_ownership_OTHER', 'earliest_cr_line',
-           'purpose_renewable_energy'],
+    (1873317, 152) (1011023, 45)
+    ['mths_since_last_record', 'purpose_moving', 'earliest_cr_line', 'verification_status_Verified', 'home_ownership_OTHER', 'mths_since_last_delinq', 'home_ownership_OWN', 'pub_rec', 'inq_fi', 'purpose_home_improvement', 'term_ 60 months', 'purpose_debt_consolidation', 'verification_status_Source Verified', 'home_ownership_RENT', 'purpose_wedding', 'application_type_Joint App', 'percent_of_income', 'purpose_credit_card', 'inq_last_6mths', 'revol_bal', 'revol_util', 'int_rate', 'purpose_major_purchase', 'purpose_educational', 'home_ownership_NONE', 'total_acc', 'purpose_house', 'mths_since_last_major_derog', 'fico_est', 'installment', 'annual_inc', 'dti', 'open_acc', 'purpose_vacation', 'delinq_2yrs', 'purpose_other', 'purpose_medical', 'purpose_renewable_energy', 'home_ownership_MORTGAGE', 'emp_length', 'purpose_small_business']
+    Index(['mths_since_last_record', 'purpose_moving', 'earliest_cr_line',
+           'verification_status_Verified', 'home_ownership_OTHER',
+           'mths_since_last_delinq', 'home_ownership_OWN', 'pub_rec', 'inq_fi',
+           'purpose_home_improvement', 'term_ 60 months',
+           'purpose_debt_consolidation', 'verification_status_Source Verified',
+           'home_ownership_RENT', 'purpose_wedding', 'application_type_Joint App',
+           'percent_of_income', 'purpose_credit_card', 'inq_last_6mths',
+           'revol_bal', 'revol_util', 'int_rate', 'purpose_major_purchase',
+           'purpose_educational', 'home_ownership_NONE', 'total_acc',
+           'purpose_house', 'mths_since_last_major_derog', 'fico_est',
+           'installment', 'annual_inc', 'dti', 'open_acc', 'purpose_vacation',
+           'delinq_2yrs', 'purpose_other', 'purpose_medical',
+           'purpose_renewable_energy', 'home_ownership_MORTGAGE', 'emp_length',
+           'purpose_small_business'],
           dtype='object')
-    (653152, 40) (163289, 40) (204111, 40)
+    (647054, 41) (161764, 41) (202205, 41)
 
 
-
-```python
-print(y.mean(),y.std())
-```
-
-    0.7955449599824409 0.40330303247902916
-
-
-
-```python
-# your code here
-
-pca = PCA(n_components=.95,svd_solver="full")
-principalComponents = pca.fit(X_train)
-
-print("PCA used %d components to capture >95%% variance."% len(pca.components_))
-print("Total variance captured = %f." % pca.explained_variance_ratio_.sum())
-#print(principalComponents.components_)
-
-X_pca_train = pca.transform(X_train)
-X_pca_test = pca.transform(X_test)
-
-```
+# Classifier Final Model
+This is the final model for the classification methods.
 
 
 ```python
@@ -1312,15 +1195,76 @@ print("\nBest decision tree score: {} occurs at depth: {}".format(
 print("Decision Tree test prediction accuracy: %f" % accuracy_score(dtclf.predict(X_test),y_test))
 ```
 
-    DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=7,
-                max_features=None, max_leaf_nodes=None,
-                min_impurity_decrease=0.0, min_impurity_split=None,
-                min_samples_leaf=1, min_samples_split=2,
-                min_weight_fraction_leaf=0.0, presort=False, random_state=None,
-                splitter='best')
-    
-    Best decision tree score: 0.7976933393758268 occurs at depth: 7
-    Decision Tree test prediction accuracy: 0.795675
+
+    ---------------------------------------------------------------------------
+
+    KeyboardInterrupt                         Traceback (most recent call last)
+
+    <ipython-input-28-76fb530d0fc2> in <module>()
+          4 parameters = {'max_depth':range(1,15)}
+          5 clf = GridSearchCV(DecisionTreeClassifier(), parameters, n_jobs=4,cv=5)
+    ----> 6 clf.fit(X=X_train, y=y_train)
+          7 dtclf = clf.best_estimator_
+          8 
+
+
+    /usr/local/lib/python3.6/site-packages/sklearn/model_selection/_search.py in fit(self, X, y, groups, **fit_params)
+        638                                   error_score=self.error_score)
+        639           for parameters, (train, test) in product(candidate_params,
+    --> 640                                                    cv.split(X, y, groups)))
+        641 
+        642         # if one choose to see train score, "out" will contain train score info
+
+
+    /usr/local/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py in __call__(self, iterable)
+        787                 # consumption.
+        788                 self._iterating = False
+    --> 789             self.retrieve()
+        790             # Make sure that we get a last message telling us we are done
+        791             elapsed_time = time.time() - self._start_time
+
+
+    /usr/local/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py in retrieve(self)
+        697             try:
+        698                 if getattr(self._backend, 'supports_timeout', False):
+    --> 699                     self._output.extend(job.get(timeout=self.timeout))
+        700                 else:
+        701                     self._output.extend(job.get())
+
+
+    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/multiprocessing/pool.py in get(self, timeout)
+        636 
+        637     def get(self, timeout=None):
+    --> 638         self.wait(timeout)
+        639         if not self.ready():
+        640             raise TimeoutError
+
+
+    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/multiprocessing/pool.py in wait(self, timeout)
+        633 
+        634     def wait(self, timeout=None):
+    --> 635         self._event.wait(timeout)
+        636 
+        637     def get(self, timeout=None):
+
+
+    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/threading.py in wait(self, timeout)
+        549             signaled = self._flag
+        550             if not signaled:
+    --> 551                 signaled = self._cond.wait(timeout)
+        552             return signaled
+        553 
+
+
+    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/threading.py in wait(self, timeout)
+        293         try:    # restore state no matter what (e.g., KeyboardInterrupt)
+        294             if timeout is None:
+    --> 295                 waiter.acquire()
+        296                 gotit = True
+        297             else:
+
+
+    KeyboardInterrupt: 
 
 
 
@@ -1334,10 +1278,6 @@ print("Random Forest training prediction accuracy: %f" % accuracy_score(rfclf.pr
 print("Random Forest test prediction accuracy: %f" % accuracy_score(rfclf.predict(X_test),y_test))
 ```
 
-    Random Forest training prediction accuracy: 0.795438
-    Random Forest test prediction accuracy: 0.795974
-
-
 
 ```python
 # your code here
@@ -1350,26 +1290,9 @@ abclf.fit(X_train, y_train)
 ```
 
 
-
-
-    AdaBoostClassifier(algorithm='SAMME.R',
-              base_estimator=DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=3,
-                max_features=None, max_leaf_nodes=None,
-                min_impurity_decrease=0.0, min_impurity_split=None,
-                min_samples_leaf=1, min_samples_split=2,
-                min_weight_fraction_leaf=0.0, presort=False, random_state=None,
-                splitter='best'),
-              learning_rate=0.05, n_estimators=50, random_state=None)
-
-
-
-
 ```python
 print("Adaboost test prediction accuracy: %f" % accuracy_score(abclf.predict(X_test),y_test))
 ```
-
-    Adaboost test prediction accuracy: 0.797311
-
 
 
 ```python
@@ -1382,13 +1305,6 @@ print("Logistic model accuracy: {}".format(fitted_logreg.score(X_test, y_test)))
 #print(*fitted_logreg.coef_[0], sep=' ')
 
 ```
-
-    Logistic model accuracy: 0.7962824149604872
-    
-    Logistic coefficients weights:
-    purpose_credit_card purpose_major_purchase int_rate inq_last_6mths installment term_ 60 months purpose_home_improvement total_acc annual_inc application_type_Joint App home_ownership_MORTGAGE purpose_medical verification_status_Verified purpose_moving revol_util revol_bal purpose_educational purpose_small_business dti inq_fi delinq_2yrs emp_length purpose_other mths_since_last_major_derog open_acc mths_since_last_record home_ownership_NONE purpose_house home_ownership_RENT verification_status_Source Verified purpose_debt_consolidation purpose_vacation fico_est mths_since_last_delinq home_ownership_OWN purpose_wedding pub_rec home_ownership_OTHER earliest_cr_line purpose_renewable_energy
-    0.0013600898228827599 -7.40140669717309e-05 -0.07584407884287264 -0.005695748368687748 -0.0004885864526639768 -0.007293815580224885 -4.021689028832225e-05 0.0071509993781865636 1.7525776335348655e-06 0.0002099796759348569 0.003118882091170028 -0.00012516080171790428 -0.0017060886151619476 -9.479886868780021e-05 -0.001360147080637869 4.2068163088875274e-06 -2.4983254327084133e-06 -0.00036765240477466674 -0.024776692895733695 -0.0035110941648664627 -0.0017341989680720816 0.00755467504829849 -0.0003135978145906202 -0.001383584418953495 -0.015372180169571403 -0.0010469547660483384 1.115785356427466e-06 -1.2922122499124682e-05 -0.0031076492779027565 -0.0017004683777320597 -0.0006574258086548938 -1.8820681759753902e-05 0.0042657099661477065 0.0006612405931690779 -0.00025554759722095835 4.0081704312408415e-05 -0.0005277379889055052 -1.6689491718677988e-06 1.2427113888002822e-06 -1.2101506802496476e-05
-
 
 
 ```python
@@ -1405,20 +1321,6 @@ testR2 = r2_score(y_test,LCOLSModel.predict(X_test))
 print("The training set OLS regression R^2 score is: %f" % trainR2)
 print("The test set OLS regression R^2 score is: %f" % testR2)
 ```
-
-    0.7691795518114681
-    [-6.17784099e-03 -2.04445097e-02 -1.42777908e-02 -1.48564970e-03
-     -1.35672911e-01 -1.87085977e-02  7.08825284e-04 -3.53424553e-08
-     -4.41525897e-02  9.99856257e-02 -2.66682956e-02 -5.35790544e-03
-     -2.38557861e-02  5.75824126e-04  5.15320246e-08  7.32739999e-04
-     -3.73966901e-02 -1.86606205e-03 -1.96873482e-03  6.56516750e-04
-     -1.33318395e-02 -1.59656313e-03  2.22763743e-01 -6.90043942e-03
-      7.78156282e-02 -1.95063621e-02 -1.02260326e-02 -1.46730307e-02
-      2.98008314e-04  8.27984695e-02  6.35827919e-02 -3.88383502e-03
-      1.25916934e-01  3.61043286e-07 -3.63684600e-02]
-    The training set OLS regression R^2 score is: 0.196863
-    The test set OLS regression R^2 score is: 0.212366
-
 
 
 ```python
@@ -1442,22 +1344,6 @@ print("The training set Ridge regression R^2 score is: %f" % RRtrainR2)
 print("The test set Ridge regression R^2 score is: %f" % RRtestR2)
 ```
 
-    Best model searched:
-    alpha = 0.005
-    intercept = 0.4896490524484959
-    betas = [-9.92683104e-04 -6.30684798e-03 -7.91581167e-03  3.17232674e-03
-     -8.15363479e-02 -4.69949523e-03 -2.06627828e-04 -5.31838429e-08
-     -7.71642231e-02  6.86748819e-02 -9.76371414e-03  5.20853991e-03
-     -8.83148479e-03  5.44092491e-04 -1.05456773e-07  3.45977121e-02
-      9.92811968e-03 -1.58545582e-04  5.73050146e-04  4.22116694e-04
-     -4.35037901e-03  4.28399859e-04  1.34734115e-01 -8.11627336e-03
-      5.00489679e-01  7.09062830e-02 -4.62039033e-03 -1.10293222e-03
-     -5.10248051e-03 -5.34687895e-05  6.50428143e-02  3.45494969e-02
-     -1.53439619e-03  1.16026022e-01  3.54698733e-07 -1.05099537e-02], 
-    The training set Ridge regression R^2 score is: 0.757304
-    The test set Ridge regression R^2 score is: 0.817908
-
-
 
 ```python
 LCLRModel = LassoCV(alphas=lambdas, cv=kfold)
@@ -1475,22 +1361,6 @@ print("The training set Lasso regression R^2 score is: %f" % LRtrainR2)
 print("The test set Lasso regression R^2 score is: %f" % LRtestR2)
 ```
 
-    Best model searched:
-    alpha = 0.001
-    intercept = 0.8325637276714343
-    betas = [ 0.00000000e+00 -0.00000000e+00 -1.50320473e-02 -0.00000000e+00
-     -1.27339415e-01 -0.00000000e+00  6.47953033e-04 -4.38414765e-08
-     -0.00000000e+00  1.40590857e-02 -0.00000000e+00 -0.00000000e+00
-     -0.00000000e+00  6.38707208e-04  6.07725804e-08  0.00000000e+00
-     -0.00000000e+00 -1.89026618e-03 -2.75860806e-04  7.00525955e-04
-     -0.00000000e+00 -1.39376083e-03  0.00000000e+00  0.00000000e+00
-     -1.29952064e-03 -1.32150752e-02  0.00000000e+00 -0.00000000e+00
-      3.08595988e-04 -0.00000000e+00  0.00000000e+00 -9.62011189e-04
-      0.00000000e+00  2.66988767e-07 -0.00000000e+00], 
-    The training set Lasso regression R^2 score is: 0.195592
-    The test set Lasso regression R^2 score is: 0.210944
-
-
 
 ```python
 coef_df=pd.DataFrame(np.array([X_train.columns,
@@ -1504,41 +1374,39 @@ coef_df=pd.DataFrame(np.array([X_train.columns,
 print(coef_df)
 ```
 
-                                    feature          OLS           RR           LR
-    0                   purpose_credit_card -0.000992678 -0.000992683            0
-    1                purpose_major_purchase  -0.00630684  -0.00630685           -0
-    2                              int_rate  -0.00791581  -0.00791581  -0.00815296
-    3                        inq_last_6mths   0.00317233   0.00317233   0.00232957
-    4                       term_ 60 months   -0.0815363   -0.0815363   -0.0760818
-    5              purpose_home_improvement  -0.00469949   -0.0046995           -0
-    6                             total_acc -0.000206628 -0.000206628 -0.000164197
-    7                            annual_inc -5.31838e-08 -5.31838e-08 -5.51971e-08
-    8            application_type_Joint App   -0.0771643   -0.0771642           -0
-    9               home_ownership_MORTGAGE    0.0686956    0.0686749           -0
-    10                      purpose_medical  -0.00976371  -0.00976371           -0
-    11         verification_status_Verified   0.00520854   0.00520854   0.00104463
-    12                       purpose_moving  -0.00883149  -0.00883148           -0
-    13                           revol_util  0.000544092  0.000544092  0.000558447
-    14                            revol_bal -1.05457e-07 -1.05457e-07 -1.01093e-07
-    15                  purpose_educational    0.0345984    0.0345977            0
-    16               purpose_small_business   0.00992813   0.00992812            0
-    17                                  dti -0.000158545 -0.000158546 -0.000250975
-    18                          delinq_2yrs   0.00057305   0.00057305            0
-    19                           emp_length  0.000422117  0.000422117   0.00033905
-    20                        purpose_other  -0.00435038  -0.00435038           -0
-    21                             open_acc    0.0004284    0.0004284  0.000373943
-    22                  home_ownership_NONE     0.134775     0.134734            0
-    23                        purpose_house  -0.00811627  -0.00811627           -0
-    24               loan_status_Fully Paid      0.50049      0.50049     0.493965
-    25                  home_ownership_RENT     0.070927    0.0709063            0
-    26  verification_status_Source Verified  -0.00462039  -0.00462039  -0.00289543
-    27           purpose_debt_consolidation  -0.00110292  -0.00110293            0
-    28                     purpose_vacation  -0.00510248  -0.00510248           -0
-    29                             fico_est -5.34688e-05 -5.34688e-05  -6.0666e-05
-    30                   home_ownership_OWN    0.0650635    0.0650428           -0
-    31                      purpose_wedding    0.0345496    0.0345495            0
-    32                              pub_rec  -0.00153439   -0.0015344           -0
-    33                 home_ownership_OTHER     0.116052     0.116026            0
-    34                     earliest_cr_line  3.54699e-07  3.54699e-07  2.14514e-07
-    35             purpose_renewable_energy   -0.0105101     -0.01051           -0
+# 5. Results and Conclusion
 
+After testing different classification options, our final model shows an accuracy of 0.80. 
+
+**Limitations**  
+Any quality research must include information about limitiatons. Our initial concern is that the data set that is available from Lending Club includes loans as early as 2010. Given that the economic trends of our country have not stayed consistent since that time, it is hard to guarantee that predictions made from this data would hold true to today’s economic situations. While we would ideally want to solve for this, our model includes no economic trend data. While we could possibly control for economic trends and time periods of growth and recession in our models, that is beyond the scope of this analysis.
+
+As a potential next step for our analysis we would incorporate broader economic indicators to understand their impact on the expected rate of return on the loans. This would be especially difficult given the complexity of predicting economic trends. While we have retrospective data on borrowers and lenders, there is an advantage to knowing what happened to economic markets while the loan was in repayment. We would not have that information when deciding which loans are suitable for investment. This is a common problem across the entire financial sector. So, while this is not unique to us, it is important to always caution a model’s interpretation with knowledge that because financial data is yet to be perfectly predicted.
+
+Because of this limitation, the actual return of the loans our model chooses may differ from the expected return we calculate. They may differ if the broader economic situation is not as stable as it has been during the period we selected our training data from.
+
+**Conclusion**  
+Our model gives users an additional edge in how they choose Lending Club investments. We give users two outputs. First the estimated probability of the loan defaulting. Second, we take this a step further to show the potential return on investment. As shown in the figure below, even loans that default have a chance of making a profit. 
+
+![image.png](attachment:image.png)
+
+We attempt to predict the amount of return from the loan.
+These two factors need to be considered in concert. An unexpected challenge was the fact that loans with higher uncertainty also have a higher interest rate. This mean more potential for gains comes with more potential losses. The grade of the investment indicates the risk as assess by the Lending Club platform. A is the least amount of and G is the highest amount of risk. We see that in the figure below that when considering individual loans grade D has the highest average return on investment; G has the highest return on investment from any class; and A has both the most predictability, but lower upside return. 
+
+![image.png](attachment:image.png)
+
+Our regression models predict the percentage of the loan commitment expected to be fulfilled. For example, a value of 100% indicates that we expect the borrower to repay 100% of the commitment. A value of 50% means we expect the borrower to fulfil half of the payments from the loan commitment. This is not the most probable value, but a risk adjusted return of the model. That is to say a loan with a score of 80% may either pay the loan back fully (a true value of 100%) or pay back 60% of the loan. This is only an expected return when considering loans in aggregate, not when considering individual loans. Below is a plot which shows the difference between our predictions and the actual values. You can see there are difference between our values, but the model still gives insights to the successful loans.  
+
+
+![image.png](attachment:image.png)
+
+If that seems confusing, you can always stick to the manta that higher is better. You have more expected return on investment for higher numbers.
+Our recommendation for any investor is to consider the risks of an investment and how it fits into your overall investment strategy. Portfolio theory states that a balanced portfolio can greatly reduce risk and have only a minor impact on return. For the peer lending component of the portfolio such as the one offered by Lending Club, investors do the following:
+1.	Consider your objectives and the risk you are willing to take.
+2.	Select the investment class that fits in with your overall strategy.
+3.	Use our tool to select (from within that class) the investments with the lowest risk of default and the highest expected payments.
+
+**Next Steps**  
+- Additional timeseries research may show why the year of issuance has such high multicolienarity. It is apparent that the quality of the investments is changing as the platform grows and changes, but this was beyond the scope of our project. If we better understand the broader changes in borrowers Lending Club attracts, we can see how that might impact their ability or willingness to repay loans.
+- Build a scrubber to pull information about loans that are currently offered. By downloading current loan data, we can apply the model to hundreds of loans to determine which of them gives the best expected return as predicted by our models.
+- Perform additional analysis about the confidence interval of our prediction. Because there is still a significant amount of noise in our models, we cannot perfectly predict the future. Giving a more detailed confidence interval about the possible outcomes will give us a better indication of if the investment is suitable for our goals.
