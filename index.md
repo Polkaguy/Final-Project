@@ -1,6 +1,4 @@
----
-redirect_from: "/Final-Project/"
----
+
 # LendingClub Final Project
 # <img style="float: left; padding-right: 300px; width: 800px" src="LendingClub.JPG"> 
 
@@ -32,15 +30,80 @@ Table of Contents:
 
 # 1. Motivation
 
-LendingClub is the first peer-to-peer lending network to register with the Securities and Exchange Commission(SEC). The LendingClub platform connects borrowers to investors and facilitates the payment of loans ranging from 40,000. <br/> <br/>
+LendingClub is the first peer-to-peer lending network to register with the Securities and Exchange Commission(SEC). The LendingClub platform connects borrowers to investors and facilitates the payment of loans ranging from 40,000.  
 
-The basic idea is that borrowers apply for a loan on the LendingClub Marketplace. Investors can review the loan applications, along with risk analysis provided by LendingClub, to determine how much of the loan request they are willing to fund. When the loan is fully funded, the borrower will receive the loan. Investors can also choose to have loans selected manually or automatically via a specified strategy. Loan details such as grade or subgrade, loan purpose, interest rate, and borrower information can all be used to evaluate a loan for possible investment. <br/> <br/>
+The basic idea is that borrowers apply for a loan on the LendingClub Marketplace. Investors can review the loan applications, along with risk analysis provided by LendingClub, to determine how much of the loan request they are willing to fund. When the loan is fully funded, the borrower will receive the loan. Investors can also choose to have loans selected manually or automatically via a specified strategy. Loan details such as grade or subgrade, loan purpose, interest rate, and borrower information can all be used to evaluate a loan for possible investment.  
 
-As part of this marketplace, LendingClub makes a significant amount of the loan data that is available to investors available online. Investors can make their own investment decisions and strategies based on the information provided by LendingClub.
-As with other types of loan and investment platforms, Lending Club is the site of possible discrimination or unfair lending practices. Note that Lending Club is an "Equal Housing Lender" (logo displayed in the bottom of each page of the website) which means that "the bank makes loans without regard to race, color, religion, national origin, sex, handicap, or familial status." Such policies in the past have failed to stop discrimination, most publicly against loan applicants of color, especially African American applicants. Racial discrimination has continued in new forms following the federal Fair Housing Act; investors have adapted their approach to fit within the guidelines of the law while maintaining results with damaging and immoral effects on communities of color. Other systems do not explicitly discriminate against minorities but enable practices such as refusing loans from specific zip codes that in effect harm minority applicants. <br/> <br/>
-## Project Objective: Create a model to choose Lending Club investments that maximize expected return.  <br/>
+As part of this marketplace, LendingClub makes a significant amount of the loan data that is available to investors available online. Investors can make their own investment decisions and strategies based on the information provided by LendingClub.  
+
+As with other types of loan and investment platforms, Lending Club is the site of possible discrimination or unfair lending practices. Note that Lending Club is an "Equal Housing Lender" (logo displayed in the bottom of each page of the website) which means that "the bank makes loans without regard to race, color, religion, national origin, sex, handicap, or familial status." Such policies in the past have failed to stop discrimination, most publicly against loan applicants of color, especially African American applicants. Racial discrimination has continued in new forms following the federal Fair Housing Act; investors have adapted their approach to fit within the guidelines of the law while maintaining results with damaging and immoral effects on communities of color. Other systems do not explicitly discriminate against minorities but enable practices such as refusing loans from specific zip codes that in effect harm minority applicants.
+
+### Project Objective:
+#### Create a model to choose Lending Club investments that maximize expected return.  
 The goal of the analysis was to choose a model that maximized the expected rate of return on investments. We considered the predictors that would be available to an investor at the time of purchase and which of them would be useful for our prediction. We considered which variables might be a good indicator of lifetime return. We also considered the risks and limitations of our predictions. <br/>
 
+# 2. Problem Statement and Project Goals: 
+
+As LendingClub investors, our goal is simply to find the subset of borrowers to whom we can lend most profitability in alignment with our return and risk profile. This can be done by either finding the highest return generating borrow sub-group for a given level of default risk, OR by finding the borrower sub-group with the lowest default risk for a given level of return required over and above our cost of funding. Furthermore, we seek to execute our investment strategy ethically whereby our model does not explicitly or implicitly discriminates against any borrowers on the basis of race, color, religion, national origin, sex, handicap, or familial status. <br/>
+
+We therefore would propose to build and evaluate a data-driven and ethical model to power our investment strategy that optimizes our investment strategy by analyzing various factor variables in the data set that impact return and default risk. While doing so, our model also considers fairness and interpretability without substantial losses to efficacy.
+
+# 3. Description of Data
+
+The data from LendingClub is freely available online. The data is updated quarterly, and is split into two sets:
+1. **Loan Data** These files contain complete loan data for all loans issued through the time period stated, including the current loan status (Current, Late, Fully Paid, etc.) and latest payment information. The file containing loan data through the “present“ contains complete loan data for all loans issued through the previous completed calendar quarter.
+2. **Declined Loan Data** These files contain the list and details of all loan applications that did not meet LendingClub’s credit underwriting policy. 
+
+## Predictor Variables 
+Determining effective predictors for the Lending Club data set is challenging for a few reasons. The data set has many variables (150+) and one would need separate appropriate response variables (discussed in the next section) from the full set of features based on study goals.
+But the sheer number of remaining variables results in a number of additional complications that need to be accounted for:
+	Predictors available at time of loan underwriting
+	Descriptive vs predictive data
+	Sparse data
+	Categorical data 
+	String data
+	Collinear features
+
+## Predictors available at underwriting:
+Before building a model, we needed to understand the variables are actually known at the time of loan decision vs being collected throughout the life cycle of the loan? Clearly this would impact the fidelity of our model. We have flagged which variables would likely be available to loan underwriters but will further review to make sure we can utilize all relevant factors.
+
+## Descriptive variables:
+There may be multiple variables which are more of a descriptive nature vs having predictive value. We have reviewed the data set for these types of variables (URL for example) but will take another pass in the coming weeks.
+
+## Sparse data:
+Much of the data is sparse (no value i.e. NaN) and we need an appropriate strategy to either fill in a value, remove that observation, or remove that variable. We note that removing observations without completely available data would limit our data set to 8000+ rows (from a total of 1.8M+ observations). We will examine if there is an effective fill strategy but for now we are removing the sparsest variables from the data set which leaves us around 800K+ observations to work with.
+
+## Categorical data:
+The data set seems to have categorical data of potential predictive which we have transformed using one-hot encoding. These variables include: 'application_type', 'term', 'verification_status', and 'home_ownership'.
+
+## String data:
+The data set also includes string data that could be useful if transformed into appropriate formats including factors like length of employment, interest rates, and revolving credit.
+
+## Collinear features:
+Finally, there are a significant number of features (34) which exhibit high correlation. One presumes it should be possible reduce total feature count by 17.
+
+## Response Variable:
+We needed to choose a variable to assess the expected return of an investment. We ultimately chose the total amount of repayments to assess the expected return. To understand why that is the best predictor, I will first explain some of the alternatives we considered and the limitations in all the possible variables to assess. We researched as predictors loans that were current or paid in full, loans that were charged, and the total amount of repayments.
+The predictors for loans that are current or paid in full and loans that were charged off can all be assessed with a simple logistic regression. Having an accurate idea of the chances of a loan being successfully repaid is essential to both predictors. First, looking at loans that are current gives us the advantage of seeing more recent observations—namely loans that have been issued within the last 60 months and are currently in repayment. Having more recent data would overcome some of the challenges of assessing the effect of broader economic trend on a borrower’s ability to pay. Looking at loans that have been charged off would give us an idea of which loans are riskiest. Knowing that information, we could select investments that have the lowest probability of being charged off. It is the same basic principle as looking for loans that are current but looking for loans that have become totally worthless. There is a category of loans somewhere in the middle which is loans that are either in a hardship payment plan or simply late on payments. We will have to define our categorical boundaries to include or exclude these values. That categorization is challenging because loans with late payment–and late fees–may end up being a better expected return.
+
+The biggest limitation of building a model that predicts the likelihood of repayment is the impact on total return. Because riskier loans have higher interest rates, it may be better to select the risky loans, and accept losses from defaults hoping that the high interest rate will offset any losses. A model predicting repayment does not help us determine the appropriate balance between risk and interest rate.
+
+To account for the problems mentioned above, we chose as our response variable $(Total Payments Received)/(Original Loan Amount)$. In other words, we are looking at the total return compared to the amount invested. A \\$25 loan that was charged off after received \\$5 in payments would have a value of 0.2. A \\$25 loan that was paid in full including \\$10 of interest would have a value of 1.4. This encompasses total return of an individual loan. By encompassing total return of individual loans, we can predict the expected value of a group of loans.
+
+This variable still has limitations. First, we must limit our analysis to loans that will have no future expected payments. In other words, we can only look at loans that have been paid in full or charged off. This means we will have to look at loans that have fully run their course which can take up 60 months or more if the loan was deferred at any point. Second, we do not have information about when the payments were made. A loan could have had no payments for 90 days and then paid principle, interest, and late fees. In other cases, the borrower may choose to pay the loan in full before the maturity date. Because we cannot calculate these nuances, we will only consider the return over the lifetime of the loan. 
+
+Based on the data, it appears that joint applications are a fairly new development in these data. We see only about 50,000 instances where the data are included for joint applications. The following visualization shows the relationship for income in joint applicants.
+
+# 6. Results and Conclusion
+
+After testing different classification options, our final model shows an accuracy of 0.80. 
+
+**Limitations**  
+Any quality research must include information about limitiatons. Our initial concern is that the data set that is available from Lending Club includes loans as early as 2010. Given that the economic trends of our country have not stayed consistent since that time, it is hard to guarantee that predictions made from this data would hold true to today’s economic situations. While we would ideally want to solve for this, our model includes no economic trend data. While we could possibly control for economic trends and time periods of growth and recession in our models, that is beyond the scope of this analysis.
+
+As a potential next step for our analysis we would incorporate broader economic indicators to understand their impact on the expected rate of return on the loans. This would be especially difficult given the complexity of predicting economic trends. While we have retrospective data on borrowers and lenders, there is an advantage to knowing what happened to economic markets while the loan was in repayment. We would not have that information when deciding which loans are suitable for investment. This is a common problem across the entire financial sector. So, while this is not unique to us, it is important to always caution a model’s interpretation with knowledge that because financial data is yet to be perfectly predicted.
+
+Because of this limitation, the actual return of the loans our model chooses may differ from the expected return we calculate. They may differ if the broader economic situation is not as stable as it has been during the period we selected our training data from.
 
 
 ```python
@@ -63,7 +126,6 @@ from sklearn.linear_model import LassoCV
 from sklearn.linear_model import LinearRegression
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import LogisticRegressionCV
 
 from sklearn.model_selection import cross_val_score
 from sklearn.utils import resample
@@ -98,14 +160,13 @@ from pandas.core import datetools
 
 ```
 
+    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+      return f(*args, **kwds)
+    /usr/local/Cellar/python/3.6.5_1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+      return f(*args, **kwds)
+    /usr/local/lib/python3.6/site-packages/sklearn/ensemble/weight_boosting.py:29: DeprecationWarning: numpy.core.umath_tests is an internal NumPy module and should not be imported. It will be removed in a future NumPy release.
+      from numpy.core.umath_tests import inner1d
     Using TensorFlow backend.
-
-
-# 2. Problem Statement and Project Goals: 
-
-As LendingClub investors, our goal is simply to find the subset of borrowers to whom we can lend most profitability in alignment with our return and risk profile. This can be done by either finding the highest return generating borrow sub-group for a given level of default risk, OR by finding the borrower sub-group with the lowest default risk for a given level of return required over and above our cost of funding. Furthermore, we seek to execute our investment strategy ethically whereby our model does not explicitly or implicitly discriminates against any borrowers on the basis of race, color, religion, national origin, sex, handicap, or familial status. <br/>
-
-We therefore would propose to build and evaluate a data-driven and ethical model to power our investment strategy that optimizes our investment strategy by analyzing various factor variables in the data set that impact return and default risk. While doing so, our model also considers fairness and interpretability without substantial losses to efficacy.
 
 
 
@@ -175,52 +236,6 @@ print(df.shape)
     Reading ./Source Data/Loan Data/LoanStats_securev1_2018Q1.csv
     (1873317, 152)
 
-
-# 3. Description of Data
-
-The data from LendingClub is freely available online. The data is updated quarterly, and is split into two sets:
-1. **Loan Data** These files contain complete loan data for all loans issued through the time period stated, including the current loan status (Current, Late, Fully Paid, etc.) and latest payment information. The file containing loan data through the “present“ contains complete loan data for all loans issued through the previous completed calendar quarter.
-2. **Declined Loan Data** These files contain the list and details of all loan applications that did not meet LendingClub’s credit underwriting policy. 
-
-## Predictor Variables 
-Determining effective predictors for the Lending Club data set is challenging for a few reasons. The data set has many variables (150+) and one would need separate appropriate response variables (discussed in the next section) from the full set of features based on study goals.
-But the sheer number of remaining variables results in a number of additional complications that need to be accounted for:
-	Predictors available at time of loan underwriting
-	Descriptive vs predictive data
-	Sparse data
-	Categorical data 
-	String data
-	Collinear features
-
-## Predictors available at underwriting:
-Before building a model, we needed to understand the variables are actually known at the time of loan decision vs being collected throughout the life cycle of the loan? Clearly this would impact the fidelity of our model. We have flagged which variables would likely be available to loan underwriters but will further review to make sure we can utilize all relevant factors.
-
-## Descriptive variables:
-There may be multiple variables which are more of a descriptive nature vs having predictive value. We have reviewed the data set for these types of variables (URL for example) but will take another pass in the coming weeks.
-
-## Sparse data:
-Much of the data is sparse (no value i.e. NaN) and we need an appropriate strategy to either fill in a value, remove that observation, or remove that variable. We note that removing observations without completely available data would limit our data set to 8000+ rows (from a total of 1.8M+ observations). We will examine if there is an effective fill strategy but for now we are removing the sparsest variables from the data set which leaves us around 800K+ observations to work with.
-
-## Categorical data:
-The data set seems to have categorical data of potential predictive which we have transformed using one-hot encoding. These variables include: 'application_type', 'term', 'verification_status', and 'home_ownership'.
-
-## String data:
-The data set also includes string data that could be useful if transformed into appropriate formats including factors like length of employment, interest rates, and revolving credit.
-
-## Collinear features:
-Finally, there are a significant number of features (34) which exhibit high correlation. One presumes it should be possible reduce total feature count by 17.
-
-## Response Variable
-We needed to choose a variable to assess the expected return of an investment. We ultimately chose the total amount of repayments to assess the expected return. To understand why that is the best predictor, I will first explain some of the alternatives we considered and the limitations in all the possible variables to assess. We researched as predictors loans that were current or paid in full, loans that were charged, and the total amount of repayments.
-The predictors for loans that are current or paid in full and loans that were charged off can all be assessed with a simple logistic regression. Having an accurate idea of the chances of a loan being successfully repaid is essential to both predictors. First, looking at loans that are current gives us the advantage of seeing more recent observations—namely loans that have been issued within the last 60 months and are currently in repayment. Having more recent data would overcome some of the challenges of assessing the effect of broader economic trend on a borrower’s ability to pay. Looking at loans that have been charged off would give us an idea of which loans are riskiest. Knowing that information, we could select investments that have the lowest probability of being charged off. It is the same basic principle as looking for loans that are current but looking for loans that have become totally worthless. There is a category of loans somewhere in the middle which is loans that are either in a hardship payment plan or simply late on payments. We will have to define our categorical boundaries to include or exclude these values. That categorization is challenging because loans with late payment–and late fees–may end up being a better expected return.
-
-The biggest limitation of building a model that predicts the likelihood of repayment is the impact on total return. Because riskier loans have higher interest rates, it may be better to select the risky loans, and accept losses from defaults hoping that the high interest rate will offset any losses. A model predicting repayment does not help us determine the appropriate balance between risk and interest rate.
-
-To account for the problems mentioned above, we chose as our response variable (Total Payments Received)/(Original Loan Amount). In other words, we are looking at the total return compared to the amount invested. A $25 loan that was charged off after received $5 in payments would have a value of 0.2. A $25 loan that was paid in full including $10 of interest would have a value of 1.4. This encompasses total return of an individual loan. By encompassing total return of individual loans, we can predict the expected value of a group of loans.
-
-This variable still has limitations. First, we must limit our analysis to loans that will have no future expected payments. In other words, we can only look at loans that have been paid in full or charged off. This means we will have to look at loans that have fully run their course which can take up 60 months or more if the loan was deferred at any point. Second, we do not have information about when the payments were made. A loan could have had no payments for 90 days and then paid principle, interest, and late fees. In other cases, the borrower may choose to pay the loan in full before the maturity date. Because we cannot calculate these nuances, we will only consider the return over the lifetime of the loan. 
-
-Based on the data, it appears that joint applications are a fairly new development in these data. We see only about 50,000 instances where the data are included for joint applications. The following visualization shows the relationship for income in joint applicants.
 
 
 ```python
@@ -476,7 +491,7 @@ plt.show;
 ```
 
 
-![png](output_13_0.png)
+![png](output_14_0.png)
 
 
 Because of the high risk of multicolinearity, and the small number of observations, we are dropping this from the dataset. We will still keep a dummy variable that treats joint applications differently, but we will not consider the joint income of applicants.
@@ -576,7 +591,7 @@ print(reduced_df.shape)
 
 ## 4.	EDA
 
-As part of the EDA, we need to know which values are categoricalInitially we created a scatter plot to initially explore the data. Here income and joint income are the two variables in our scatter plot. In this plot we were able to see that the majority of the income was grouped below $500,000 jointly and $300,000 individually. 
+As part of the EDA, we need to know which values are categorical. Initially we created a scatter plot to initially explore the data. Here income and joint income are the two variables in our scatter plot. In this plot we were able to see that the majority of the income was grouped below \\$500,000 jointly and \\$300,000 individually. 
  
 Beyond this, we then started to visualize the application type of the loan. We did this both by the loan amount individually and jointly as a bar chart and a violin plot. 
  
@@ -1053,7 +1068,7 @@ plt.show()
 
 
 
-![png](output_31_1.png)
+![png](output_32_1.png)
 
 
 ## Removing redundancy
@@ -1526,16 +1541,4 @@ print(coef_df)
     33                 home_ownership_OTHER     0.116052     0.116026            0
     34                     earliest_cr_line  3.54699e-07  3.54699e-07  2.14514e-07
     35             purpose_renewable_energy   -0.0105101     -0.01051           -0
-
-
-# Results and Conclusion
-
-After testing different regression options, our final model shows an accuracy of 0.80. 
-
-**Limitations** <br/>
-Any quality research must include information about limitiatons. Our initial concern is that the data set that is available from Lending Club includes loans as early as 2010. Given that the economic trends of our country have not stayed consistent since that time, it is hard to guarantee that predictions made from this data would hold true to today’s economic situations. While we would ideally want to solve for this, our model includes no economic trend data. While we could possibly control for economic trends and time periods of growth and recession in our models, that is beyond the scope of this analysis. <br/> 
-
-As a potential next step for our analysis we would incorporate broader economic indicators to understand their impact on the expected rate of return on the loans. This would be especially difficult given the complexity of predicting economic trends. While we have retrospective data on borrowers and lenders, there is an advantage to knowing what happened to economic markets while the loan was in repayment. We would not have that information when deciding which loans are suitable for investment. This is a common problem across the entire financial sector. So, while this is not unique to us, it is important to always caution a model’s interpretation with knowledge that because financial data is yet to be perfectly predicted. <br/>
-
-Because of this limitation, the actual return of the loans our model chooses may differ from the expected return we calculate. They may differ if the broader economic situation is not as stable as it has been during the period we selected our training data from. <br/>
 
